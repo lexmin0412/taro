@@ -718,45 +718,42 @@ export default class TaroMiniPlugin {
    * 收集分包配置中的页面
    */
   getSubPackages (appConfig: AppConfig) {
-    const subPackages = appConfig.subPackages || appConfig.subpackages
     const { framework } = this.options
-    if (subPackages && subPackages.length) {
-      subPackages.forEach(item => {
-        if (item.pages && item.pages.length) {
-          const root = item.root
-          const isIndependent = !!item.independent
-          if (isIndependent) {
-            this.independentPackages.set(root, [])
-          }
-          item.pages.forEach(page => {
-            let pageItem = `${root}/${page}`
-            pageItem = pageItem.replace(/\/{2,}/g, '/')
-            let hasPageIn = false
-            this.pages.forEach(({ name }) => {
-              if (name === pageItem) {
-                hasPageIn = true
-              }
-            })
-            if (!hasPageIn) {
-              const pagePath = resolveMainFilePath(path.join(this.options.sourceDir, pageItem), FRAMEWORK_EXT_MAP[framework])
-              const templatePath = this.getTemplatePath(pagePath)
-              const isNative = this.isNativePageORComponent(templatePath)
-              if (isIndependent) {
-                const independentPages = this.independentPackages.get(root)
-                independentPages?.push(pagePath)
-              }
-              this.pages.add({
-                name: pageItem,
-                path: pagePath,
-                isNative,
-                stylePath: isNative ? this.getStylePath(pagePath) : undefined,
-                templatePath: isNative ? this.getTemplatePath(pagePath) : undefined
-              })
+    appConfig.subpackages?.forEach(item => {
+      if (item.pages && item.pages.length) {
+        const root = item.root
+        const isIndependent = !!item.independent
+        if (isIndependent) {
+          this.independentPackages.set(root, [])
+        }
+        item.pages.forEach(page => {
+          let pageItem = `${root}/${page}`
+          pageItem = pageItem.replace(/\/{2,}/g, '/')
+          let hasPageIn = false
+          this.pages.forEach(({ name }) => {
+            if (name === pageItem) {
+              hasPageIn = true
             }
           })
-        }
-      })
-    }
+          if (!hasPageIn) {
+            const pagePath = resolveMainFilePath(path.join(this.options.sourceDir, pageItem), FRAMEWORK_EXT_MAP[framework])
+            const templatePath = this.getTemplatePath(pagePath)
+            const isNative = this.isNativePageORComponent(templatePath)
+            if (isIndependent) {
+              const independentPages = this.independentPackages.get(root)
+              independentPages?.push(pagePath)
+            }
+            this.pages.add({
+              name: pageItem,
+              path: pagePath,
+              isNative,
+              stylePath: isNative ? this.getStylePath(pagePath) : undefined,
+              templatePath: isNative ? this.getTemplatePath(pagePath) : undefined
+            })
+          }
+        })
+      }
+    })
   }
 
   /**

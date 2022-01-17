@@ -405,11 +405,7 @@ export default class Convertor {
   }
 
   getSubPackages () {
-    const subPackages = this.entryJSON.subpackages || this.entryJSON.subPackages
-    if (!subPackages || !subPackages.length) {
-      return
-    }
-    subPackages.forEach(item => {
+    this.entryJSON.subpackages?.forEach(item => {
       if (item.pages && item.pages.length) {
         const root = item.root
         item.pages.forEach(page => {

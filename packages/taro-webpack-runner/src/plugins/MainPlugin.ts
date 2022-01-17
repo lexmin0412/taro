@@ -137,34 +137,31 @@ export default class MainPlugin {
 
   getSubPackages () {
     const appConfig = this.appConfig
-    const subPackages = appConfig.subPackages || appConfig.subpackages
     const { framework } = this.options
-    if (subPackages && subPackages.length) {
-      subPackages.forEach(item => {
-        if (item.pages && item.pages.length) {
-          const root = item.root
-          item.pages.forEach(page => {
-            let pageItem = `${root}/${page}`
-            pageItem = pageItem.replace(/\/{2,}/g, '/')
-            let hasPageIn = false
-            this.pages.forEach(({ name }) => {
-              if (name === pageItem) {
-                hasPageIn = true
-              }
-            })
-            if (!hasPageIn) {
-              const pagePath = resolveMainFilePath(path.join(this.options.sourceDir, pageItem), FRAMEWORK_EXT_MAP[framework])
-              this.pages.add({
-                name: pageItem,
-                path: pagePath
-              })
-              // eslint-disable-next-line no-unused-expressions
-              this.appConfig.pages?.push(pageItem)
+    appConfig.subpackages?.forEach(item => {
+      if (item.pages && item.pages.length) {
+        const root = item.root
+        item.pages.forEach(page => {
+          let pageItem = `${root}/${page}`
+          pageItem = pageItem.replace(/\/{2,}/g, '/')
+          let hasPageIn = false
+          this.pages.forEach(({ name }) => {
+            if (name === pageItem) {
+              hasPageIn = true
             }
           })
-        }
-      })
-    }
+          if (!hasPageIn) {
+            const pagePath = resolveMainFilePath(path.join(this.options.sourceDir, pageItem), FRAMEWORK_EXT_MAP[framework])
+            this.pages.add({
+              name: pageItem,
+              path: pagePath
+            })
+            // eslint-disable-next-line no-unused-expressions
+            this.appConfig.pages?.push(pageItem)
+          }
+        })
+      }
+    })
   }
 
   getPagesConfigList () {

@@ -340,7 +340,7 @@ export default class MiniSplitChunksPlugin extends SplitChunksPlugin {
     const appConfigPath = this.getConfigFilePath(appEntry)
     const appConfig: AppConfig = readConfig(appConfigPath)
 
-    return appConfig.subPackages || appConfig.subpackages || []
+    return appConfig.subpackages || []
   }
 
   /**
